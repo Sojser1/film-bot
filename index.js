@@ -11,9 +11,12 @@ const type = require('./enums/video-type.js').type
 const pathFilm = './data/film.json';
 
 bot.start(async (ctx) => {
-    await ctx.reply('Привет, привет')
-    await ctx.reply(help.commands)
-
+    try {
+        await ctx.reply('Привет, привет')
+        await ctx.reply(help.commands)
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 bot.help((ctx) => ctx.reply(help.commands))
@@ -51,8 +54,8 @@ bot.command('view', (ctx) => {
 })
 
 function addAction(name, text) {
-    bot.action(name, async (ctx) => {
-        try {
+    try {
+        bot.action(name, async (ctx) => {
             await ctx.answerCbQuery();
             await ctx.reply(text)
             await bot.hears(/.*/, async (ctx) => {
@@ -62,15 +65,17 @@ function addAction(name, text) {
                 await ctx.reply(type[name].title + `, ${message.text}, ` + 'успешно добавлен')
                 await ctx.reply(`/start - вернуться в начало \n /new - добавить еще один`)
             })
-        } catch (e) {
-            errorHandler(e)
-        }
-    })
+        })
+
+    } catch (e) {
+        errorHandler(e)
+    }
+
 }
 
 function errorHandler(ctx, customMessage, error) {
     ctx.reply(customMessage);
-    if (error){
+    if (error) {
         console.log(error.message)
     }
 }
