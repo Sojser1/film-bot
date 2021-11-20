@@ -8,8 +8,9 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 const help = require('./help.js')
 const type = require('./enums/video-type.js').type
 
-const pathFilm = './data/film.json';
-const path = './data'
+const path = require('./const/path').path
+const {save} = require('./handlers/save')
+const {returnViewHTML} = require('./handlers/returnViewHTML')
 
 
 bot.start(async (ctx) => {
@@ -42,7 +43,7 @@ bot.command('new', async (ctx) => {
 
 bot.command('view', (ctx) => {
     try {
-        fs.readFile(pathFilm, async (e, data) => {
+        fs.readFile(path.pathFilm, async (e, data) => {
             if (!data) {
                 errorHandler(ctx, `Вы пока ничего не добавили\n/new - Добавить`);
                 return
@@ -87,67 +88,9 @@ function errorHandler(ctx, customMessage, error) {
     }
 }
 
-function save(type, name, username, date) {
-    try {
-        const d = new Date(date * 1000).toLocaleDateString();
-        const time = new Date(date * 1000).toLocaleTimeString();
-        fs.readFile(pathFilm, (e, data) => {
-            let list;
-            if (data) {
-                list = JSON.parse(data);
-            } else {
-                list = {};
-
-            }
-            if (!list[type]) {
-                list[type] = [];
-            }
-            const newVideoObject = {
-                filmName: name,
-                username,
-                date: `${d} ${time}`
-            };
-
-            list[type].push(newVideoObject);
-            fs.writeFile(pathFilm, JSON.stringify(list), (e, r) => {
-            });
-        })
-    } catch (e) {
-        errorHandler(e)
-    }
-
-}
-
-function returnViewHTML(data) {
-    try {
-        let res = ``;
-        Object.keys(data).forEach(janr => {
-            res = res.concat(`\n${type[janr].title}ы:\n`)
-            data[janr].forEach(videoInfo => {
-                res = res.concat(`${createTitleCaseName(videoInfo.filmName)} - ${videoInfo.username} ${videoInfo.date}\n`)
-            })
-        })
-        return res;
-    } catch (e) {
-        errorHandler(e)
-    }
-
-}
-
-function createTitleCaseName(name) {
-    try {
-        const nameArray = name.trim().split('');
-        nameArray[0] = nameArray[0].toUpperCase();
-        return nameArray.join('');
-    } catch (e) {
-        console.log(e)
-    }
-
-}
-
 function createDir() {
-    fs.mkdir(path, err => {
-        if (err) throw err;
+    fs.mkdir(path.path, err => {
+        console.log(err)
     })
 }
 
