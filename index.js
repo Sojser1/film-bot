@@ -43,9 +43,13 @@ bot.command('new', async (ctx) => {
 bot.command('view', (ctx) => {
     try {
         fs.readFile(pathFilm, async (e, data) => {
+            if (!data) {
+                errorHandler(ctx, `Вы пока ничего не добавили\n/new - Добавить`);
+                return
+            }
             const response = returnViewHTML(JSON.parse(data));
             if (!response.length) {
-                errorHandler(ctx, `Вы пока ничего не добавили\n/new - Добавить`)
+                errorHandler(ctx, `Вы пока ничего не добавили\n/new - Добавить`);
             } else {
                 await ctx.reply(response);
             }
@@ -91,7 +95,7 @@ function save(type, name, username, date) {
             let list;
             if (data) {
                 list = JSON.parse(data);
-            }else {
+            } else {
                 list = {};
 
             }
@@ -141,8 +145,8 @@ function createTitleCaseName(name) {
 
 }
 
-function createDir(){
-    fs.mkdir(path, err =>{
+function createDir() {
+    fs.mkdir(path, err => {
         if (err) throw err;
     })
 }
