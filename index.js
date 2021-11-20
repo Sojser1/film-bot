@@ -9,11 +9,14 @@ const help = require('./help.js')
 const type = require('./enums/video-type.js').type
 
 const pathFilm = './data/film.json';
+const path = './data'
+
 
 bot.start(async (ctx) => {
     try {
         await ctx.reply('Привет, привет')
         await ctx.reply(help.commands)
+        createDir()
     } catch (e) {
         console.log(e)
     }
@@ -85,7 +88,13 @@ function save(type, name, username, date) {
         const d = new Date(date * 1000).toLocaleDateString();
         const time = new Date(date * 1000).toLocaleTimeString();
         fs.readFile(pathFilm, (e, data) => {
-            const list = JSON.parse(data);
+            let list;
+            if (data) {
+                list = JSON.parse(data);
+            }else {
+                list = {};
+
+            }
             if (!list[type]) {
                 list[type] = [];
             }
@@ -131,6 +140,13 @@ function createTitleCaseName(name) {
     }
 
 }
+
+function createDir(){
+    fs.mkdir(path, err =>{
+        if (err) throw err;
+    })
+}
+
 
 addAction('film', 'Введите название фильма')
 addAction('mult', 'Введите название мультфильма')
