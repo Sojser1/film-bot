@@ -11,13 +11,16 @@ const type = require('./enums/video-type.js').type
 const path = require('./const/path').path
 const {save} = require('./handlers/save')
 const {returnViewHTML} = require('./handlers/returnViewHTML')
+const {checkFolder} = require('./handlers/checkFolder')
 
 
 bot.start(async (ctx) => {
     try {
         await ctx.reply('Привет, привет')
         await ctx.reply(help.commands)
-        createDir()
+        if (!checkFolder){
+            createDir()
+        }
     } catch (e) {
         console.log(e)
     }
