@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('../const/path').path
 
 const save = function save(type, name, username, date) {
-    console.log(path)
     try {
         const d = new Date(date * 1000).toLocaleDateString();
         const time = new Date(date * 1000).toLocaleTimeString();
